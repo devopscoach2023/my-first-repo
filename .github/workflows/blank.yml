@@ -11,8 +11,6 @@ jobs:
   dev_build:
     name: Deploy to Dev 
     runs-on: ubuntu-latest
-    if:
-      contains(github.event.inputs.dev_env, 'true')
 
     steps:
     - name: Checkout code
