@@ -5,13 +5,13 @@ on:
     inputs:
       dev_env:
         description: 'Deploy to Dev'
-        required: true
+        required: false
       stage_env:
         description: 'Deploy to Stage'
-        required: true
+        required: false
       prod_env:
         description: 'Deploy to Prod'
-        required: true
+        required: false
 
 jobs:
   dev_build:
