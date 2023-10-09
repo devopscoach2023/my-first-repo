@@ -6,12 +6,6 @@ on:
       dev_env:
         description: 'Deploy to Dev'
         required: false
-      stage_env:
-        description: 'Deploy to Stage'
-        required: false
-      prod_env:
-        description: 'Deploy to Prod'
-        required: false
 
 jobs:
   dev_build:
