@@ -1,0 +1,51 @@
+name: Java App CI/CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      dev_env:
+        description: 'Deploy to Dev'
+        required: true
+      stage_env:
+        description: 'Deploy to Stage'
+        required: true
+      prod_env:
+        description: 'Deploy to Prod'
+        required: true
+
+jobs:
+  dev_build:
+    name: Deploy to Dev 
+    runs-on: ubuntu-latest
+    if:
+      contains(github.event.inputs.dev_env, 'true')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ github.event.inputs.java_version }}
+
+    - name: Build with Maven
+      run: mvn package
+
+    - name: Build Docker image
+      run: |
+        docker build -t your-app:${{ github.sha }} .
+        docker tag your-app:${{ github.sha }} ${{ github.event.inputs.ecr_repository }}:${{ github.sha }}
+
+
+    - name: Log in to Amazon ECR
+      run: |
+        aws ecr get-login-password --region <your-region> | docker login --username AWS --password-stdin 422723218561.dkr.ecr.ap-south-1.amazonaws.com
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Push Docker image to ECR
+      run: |
+        docker push ${{ github.event.inputs.ecr_repository }}:${{ github.sha }}
+
